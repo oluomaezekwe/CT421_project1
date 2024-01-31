@@ -1,4 +1,5 @@
 import random
+import matplotlib.pyplot as plt
 from itertools import product
 
 
@@ -16,7 +17,27 @@ def calculate_fitness(individual):
     return count
 
 
-new = create_string()
-count = calculate_fitness(new)
-print(new)
-print(count)
+gen_len = 100
+pop_len = 100
+
+avg_fitness = []
+
+for i in range(gen_len):
+    total_pop_fitness = 0
+
+    for j in range(pop_len):
+        x = create_string()
+        x_fitness = calculate_fitness(x)
+        total_pop_fitness += x_fitness
+
+    total_pop_fitness = total_pop_fitness / pop_len
+    avg_fitness.append(total_pop_fitness)
+
+# plot average fitness over generations
+plt.plot(range(gen_len), avg_fitness)
+
+plt.xlabel('no. of generations')
+plt.ylabel('fitness')
+plt.title('avg fitness')
+
+plt.show()
