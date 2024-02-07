@@ -19,8 +19,16 @@ def one_point_crossover(p1, p2):
     c2 = p2[:crossover_point] + p1[crossover_point:]
     return c1, c2
 
+def standard_mutation(string, rate_mutation):
+    string_post_mutation = ''
+    for char in string:
+        if random.random() < rate_mutation:
+            string_post_mutation += '0' if char == '1' else '1'
+        else:
+            string_post_mutation += char
+    return string_post_mutation
 
-def selection(population):
+def selection(population, rate_mutation):
     next_generation = []
     total_fitness = 0
 
@@ -46,12 +54,14 @@ def selection(population):
         parent1, parent2 = parents
 
         child1, child2 = one_point_crossover(parent1, parent2)
+        child1 = standard_mutation(child1, rate_mutation)
+        child2 = standard_mutation(child2, rate_mutation)
         next_generation.extend([child1, child2])
 
     return next_generation, average_fitness
 
 
-def genetic_algorithm(str_len, population_size, num_generations):
+def genetic_algorithm(str_len, population_size, num_generations, rate_mutation):
     population = []
     average_fitnesses = []
 
@@ -61,7 +71,7 @@ def genetic_algorithm(str_len, population_size, num_generations):
 
     # evolve the population
     for generation in range(num_generations):
-        population, average_fitness = selection(population)
+        population, average_fitness = selection(population, rate_mutation)
         average_fitnesses.append(average_fitness)
 
     return average_fitnesses
@@ -70,8 +80,9 @@ def genetic_algorithm(str_len, population_size, num_generations):
 ind_len = 30
 num_gens = 100
 pop_size = 100
+rate_mut = 0.01
 
-avg_fitnesses = genetic_algorithm(ind_len, pop_size, num_gens)
+avg_fitnesses = genetic_algorithm(ind_len, pop_size, num_gens, rate_mut)
 
 # plot the average fitness over each generation
 plt.plot(range(num_gens), avg_fitnesses)
