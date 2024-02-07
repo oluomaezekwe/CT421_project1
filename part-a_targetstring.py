@@ -1,0 +1,104 @@
+import random
+import matplotlib.pyplot as plt
+
+
+# generates a random string
+def create_string(length):
+    return ''.join(str(random.randint(0, 1)) for _ in range(length))
+
+
+# calculates the fitness of a string by checking the number of matching digits to the target string
+def calculate_fitness(target_string, string):
+    count = 0
+
+    for i in range(len(target_string)):
+        if target_string[i] == string[i]:
+            count += 1
+
+    return count
+
+
+# performs one point crossover
+def one_point_crossover(p1, p2):
+    crossover_point = random.randint(1, len(p1) - 1)
+    c1 = p1[:crossover_point] + p2[crossover_point:]
+    c2 = p2[:crossover_point] + p1[crossover_point:]
+    return c1, c2
+
+
+def standard_mutation(string, rate_mutation):
+    string_post_mutation = ''
+    for char in string:
+        if random.random() < rate_mutation:
+            string_post_mutation += '0' if char == '1' else '1'
+        else:
+            string_post_mutation += char
+    return string_post_mutation
+
+
+def selection(target, population, rate_mutation):
+    next_generation = []
+    total_fitness = 0
+
+    # calculate the fitness of the population
+    for ind in population:
+        total_fitness += calculate_fitness(target, ind)
+
+    average_fitness = total_fitness / len(population)
+
+    # perform one-point crossover
+    for _ in range(len(population) // 2):
+        parents = []
+        weights = []
+
+        # get the weights
+        for ind in population:
+            weights.append(calculate_fitness(target, ind))
+
+        # select the parents
+        for _ in range(2):
+            selected_parent = random.choices(population, weights=weights)[0]
+            parents.append(selected_parent)
+        parent1, parent2 = parents
+
+        child1, child2 = one_point_crossover(parent1, parent2)
+        child1 = standard_mutation(child1, rate_mutation)
+        child2 = standard_mutation(child2, rate_mutation)
+        next_generation.extend([child1, child2])
+
+    return next_generation, average_fitness
+
+
+def genetic_algorithm(str_len, population_size, num_generations, rate_mutation):
+    target_string = create_string(str_len)
+
+    population = []
+    average_fitnesses = []
+
+    # generate the initial population
+    for _ in range(population_size):
+        population.append(create_string(str_len))
+
+    # evolve the population
+    for generation in range(num_generations):
+        population, average_fitness = selection(target_string, population, rate_mutation)
+        average_fitnesses.append(average_fitness)
+
+    return average_fitnesses
+
+
+ind_len = 30
+num_gens = 100
+pop_size = 100
+rate_mut = 0.01
+
+avg_fitnesses = genetic_algorithm(ind_len, pop_size, num_gens, rate_mut)
+
+# plot the average fitness over each generation
+plt.plot(range(num_gens), avg_fitnesses)
+
+plt.xlabel('no. of generations')
+plt.ylabel('fitness')
+plt.title('avg fitness')
+
+plt.show()
