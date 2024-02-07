@@ -7,9 +7,15 @@ def create_string(length):
     return ''.join(str(random.randint(0, 1)) for _ in range(length))
 
 
-# calculates the fitness of a string by counting the number of 1s present
-def calculate_fitness(string):
-    return string.count('1')
+# calculates the fitness of a string by checking the number of matching digits to the target string
+def calculate_fitness(target_string, string):
+    count = 0
+
+    for i in range(len(target_string)):
+        if target_string[i] == string[i]:
+            count += 1
+
+    return count
 
 
 # performs one point crossover
@@ -30,13 +36,13 @@ def standard_mutation(string, rate_mutation):
     return string_post_mutation
 
 
-def selection(population, rate_mutation):
+def selection(target, population, rate_mutation):
     next_generation = []
     total_fitness = 0
 
     # calculate the fitness of the population
     for ind in population:
-        total_fitness += calculate_fitness(ind)
+        total_fitness += calculate_fitness(target, ind)
 
     average_fitness = total_fitness / len(population)
 
@@ -47,7 +53,7 @@ def selection(population, rate_mutation):
 
         # get the weights
         for ind in population:
-            weights.append(calculate_fitness(ind))
+            weights.append(calculate_fitness(target, ind))
 
         # select the parents
         for _ in range(2):
@@ -64,6 +70,8 @@ def selection(population, rate_mutation):
 
 
 def genetic_algorithm(str_len, population_size, num_generations, rate_mutation):
+    target_string = create_string(str_len)
+
     population = []
     average_fitnesses = []
 
@@ -73,7 +81,7 @@ def genetic_algorithm(str_len, population_size, num_generations, rate_mutation):
 
     # evolve the population
     for generation in range(num_generations):
-        population, average_fitness = selection(population, rate_mutation)
+        population, average_fitness = selection(target_string, population, rate_mutation)
         average_fitnesses.append(average_fitness)
 
     return average_fitnesses
