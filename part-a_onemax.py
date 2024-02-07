@@ -20,50 +20,64 @@ def one_point_crossover(p1, p2):
     return c1, c2
 
 
+def selection(population):
+    next_generation = []
+    total_fitness = 0
+
+    # calculate the fitness of the population
+    for ind in population:
+        total_fitness += calculate_fitness(ind)
+
+    average_fitness = total_fitness / len(population)
+
+    # perform one-point crossover
+    for _ in range(len(population) // 2):
+        parents = []
+        weights = []
+
+        # get the weights
+        for ind in population:
+            weights.append(calculate_fitness(ind))
+
+        # select the parents
+        for _ in range(2):
+            selected_parent = random.choices(population, weights=weights)[0]
+            parents.append(selected_parent)
+        parent1, parent2 = parents
+
+        child1, child2 = one_point_crossover(parent1, parent2)
+        next_generation.extend([child1, child2])
+
+    return next_generation, average_fitness
+
+
+def genetic_algorithm(str_len, population_size, num_generations):
+    population = []
+    average_fitnesses = []
+
+    # generate the initial population
+    for _ in range(population_size):
+        population.append(create_string(str_len))
+
+    # evolve the population
+    for generation in range(num_generations):
+        population, average_fitness = selection(population)
+        average_fitnesses.append(average_fitness)
+
+    return average_fitnesses
+
+
 ind_len = 30
 num_gens = 100
 pop_size = 100
-population = []
-next_pop = []
 
-# create the initial population
-for _ in range(pop_size):
-    population.append(create_string(ind_len))
+avg_fitnesses = genetic_algorithm(ind_len, pop_size, num_gens)
 
-# perform one point crossover
-for _ in range(len(population) // 2):
-    parents = []
-    weights = []
+# plot the average fitness over each generation
+plt.plot(range(num_gens), avg_fitnesses)
 
-    for ind in population:
-        weights.append(calculate_fitness(ind))
+plt.xlabel('no. of generations')
+plt.ylabel('fitness')
+plt.title('avg fitness')
 
-    for _ in range(2):
-        selected_parent = random.choices(population, weights=weights)[0]
-        parents.append(selected_parent)
-    parent1, parent2 = parents
-
-    child1, child2 = one_point_crossover(parent1, parent2)
-    next_pop.extend([child1, child2])
-
-# calculate the fitness of the generations
-total_fitness_init = 0
-total_fitness_crossed = 0
-
-for ind in population:
-    total_fitness_init += calculate_fitness(ind)
-
-average_fitness_init = total_fitness_init / pop_size
-
-for ind in next_pop:
-    total_fitness_crossed += calculate_fitness(ind)
-average_fitness_crossed = total_fitness_crossed / pop_size
-
-print(average_fitness_init)
-print(average_fitness_crossed)
-
-# plt.xlabel('no. of generations')
-# plt.ylabel('fitness')
-# plt.title('avg fitness')
-#
-# plt.show()
+plt.show()
