@@ -7,9 +7,13 @@ def create_string(length):
     return ''.join(str(random.randint(0, 1)) for _ in range(length))
 
 
-# calculates the fitness of a string by counting the number of 1s present
+# calculates the deceptive fitness of a string
 def calculate_fitness(string):
-    return string.count('1')
+    num_ones = string.count('1')
+    if num_ones == 0:
+        return 2 * len(string)
+    else:
+        return num_ones
 
 
 # performs one point crossover
