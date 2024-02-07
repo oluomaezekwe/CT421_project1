@@ -79,7 +79,7 @@
       <updated>1706644543396</updated>
       <workItem from="1706644555152" duration="3085000" />
       <workItem from="1706647913092" duration="5855000" />
-      <workItem from="1707314934778" duration="6573000" />
+      <workItem from="1707314934778" duration="4643000" />
     </task>
     <servers />
   </component>
@@ -88,7 +88,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CT421_project1$main.coverage" NAME="main Coverage Results" MODIFIED="1707315349389" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/CT421_project1$part_a_onemax.coverage" NAME="part-a_onemax Coverage Results" MODIFIED="1707321509274" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CT421_project1$part_a_onemax.coverage" NAME="part-a_onemax Coverage Results" MODIFIED="1707319639897" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CT421_project1$file.coverage" NAME="file Coverage Results" MODIFIED="1706697529441" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
