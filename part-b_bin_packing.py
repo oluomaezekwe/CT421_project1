@@ -260,16 +260,15 @@ def create_bin(capacity, items):
     bin_info = []
 
     for weight, count in items:
-        for _ in range(count):
-            placed = False
-            for b in bins:
-                if sum(b) + weight <= capacity:
-                    b.append(weight)
-                    placed = True
-                    break
-            if not placed:
-                bin_info.append((sum(bin), bin[:]))
-                bins.append([weight])
+        placed = False
+        for b in bins:
+            if sum(b) + weight <= capacity:
+                b.append(weight)
+                placed = True
+                break
+        if not placed:
+            bin_info.append((sum(b), b[:]))
+            bins.append([weight])
     bin_info.append((sum(bins[-1]), bins[-1][:]))
 
     return bin_info
@@ -321,5 +320,21 @@ def genetic_algorithm(instances, population_size, num_generations, rate_mutation
             avg_fitnesses.append(average_fitness)
 
         bin_counts.append(len(population[0]))
+        
+        print(f"Number of bins used for instance: {len(population[0])}")
+
+    plt.plot(range(1, len(bin_counts) + 1), bin_counts, marker='o', linestyle='-')
+    plt.xlabel('Instance Number')
+    plt.ylabel('Number of Bins Used')
+    plt.title('Number of Bins Used for Each Instance')
+    plt.grid(True)
+    plt.show()
 
     return avg_fitnesses
+
+
+pop_size = 100
+num_gens = 100
+rate_mut = 0.01
+
+avg_fitnesses = genetic_algorithm(instances, pop_size, num_gens, rate_mut)
