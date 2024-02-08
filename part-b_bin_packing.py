@@ -274,9 +274,8 @@ def calculate_fitness(individual):
     return len(individual)
 
 
-for i in instances:
-    cap, inst = parse_instance(i)
-    bs = create_bin(cap, inst)
-    fit = calculate_fitness(bs)
-    print("Bin = ", bs)
-    print("Fitness = ", fit)
+def one_point_crossover(p1, p2):
+    crossover_point = random.randint(1, min(len(p1), len(p2)) - 1)
+    c1 = p1[:crossover_point] + p2[crossover_point:]
+    c2 = p2[:crossover_point] + p1[crossover_point:]
+    return c1, c2
