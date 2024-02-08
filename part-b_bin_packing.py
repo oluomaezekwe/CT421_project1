@@ -243,6 +243,7 @@ instances = [
          150         2'''
 ]
 
+
 def parse_instance(instance):
     lines = instance.split('\n')
     capacity = int(lines[2])
@@ -253,21 +254,29 @@ def parse_instance(instance):
             items.append((weight, value))
     return capacity, items
 
+
 def create_bin(capacity, items):
     bins = [[]]
     for weight, count in items:
         for _ in range(count):
             placed = False
-            for bin in bins:
-                if sum(bin) + weight <= capacity:
-                    bin.append(weight)
+            for b in bins:
+                if sum(b) + weight <= capacity:
+                    b.append(weight)
                     placed = True
                     break
             if not placed:
                 bins.append([weight])
     return bins
 
+
+def calculate_fitness(individual):
+    return len(individual)
+
+
 for i in instances:
     cap, inst = parse_instance(i)
-    bins = create_bin(cap, inst)
-    print(bins)
+    bs = create_bin(cap, inst)
+    fit = calculate_fitness(bs)
+    print("Bin = ", bs)
+    print("Fitness = ", fit)
