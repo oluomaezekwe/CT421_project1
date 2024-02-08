@@ -257,6 +257,8 @@ def parse_instance(instance):
 
 def create_bin(capacity, items):
     bins = [[]]
+    bin_info = []
+
     for weight, count in items:
         for _ in range(count):
             placed = False
@@ -266,8 +268,11 @@ def create_bin(capacity, items):
                     placed = True
                     break
             if not placed:
+                bin_info.append((sum(bin), bin[:]))
                 bins.append([weight])
-    return bins
+    bin_info.append((sum(bins[-1]), bins[-1][:]))
+
+    return bin_info
 
 
 def calculate_fitness(individual):
@@ -279,3 +284,26 @@ def one_point_crossover(p1, p2):
     c1 = p1[:crossover_point] + p2[crossover_point:]
     c2 = p2[:crossover_point] + p1[crossover_point:]
     return c1, c2
+
+
+def standard_mutation(individual, rate_mutation):
+    for bin_value, bin_items in individual:
+        if random.random() < rate_mutation:
+            item_index = random.randint(0, len(bin_items) - 1)
+            bin_items[item_index] = random.choice(bin_items)
+    return individual
+
+
+def selection(population, rate_mutation):
+    next_generation = []
+    total_fitness = sum(calculate_fitness(ind) for ind in population)
+    average_fitness = total_fitness / len(population)
+
+    for _ in range(len(population) // 2):
+        parents = random.choices(population, k=2, weights=[calculate_fitness(ind) for ind in population])
+        child1, child2 = one_point_crossover(parents[0], parents[1])
+        child1 = standard_mutation(child1, rate_mutation)
+        child2 = standard_mutation(child2, rate_mutation)
+        next_generation.extend([child1, child2])
+
+    return next_generation, average_fitness
