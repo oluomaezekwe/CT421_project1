@@ -307,3 +307,19 @@ def selection(population, rate_mutation):
         next_generation.extend([child1, child2])
 
     return next_generation, average_fitness
+
+
+def genetic_algorithm(instances, population_size, num_generations, rate_mutation):
+    avg_fitnesses = []
+    bin_counts = []
+
+    for instance in instances:
+        capacity, items = parse_instance(instance)
+        population = [create_bin(capacity, items) for _ in range(population_size)]
+        for generation in range(num_generations):
+            population, average_fitness = selection(population, rate_mutation)
+            avg_fitnesses.append(average_fitness)
+
+        bin_counts.append(len(population[0]))
+
+    return avg_fitnesses
