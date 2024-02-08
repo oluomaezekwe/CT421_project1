@@ -1,100 +1,273 @@
 import random
 import matplotlib.pyplot as plt
 
+# Problem instances
+instances = [
+    '''BPP      1'
+          46
+        1000
+         200         3
+         199         1
+         198         2
+         197         2
+         194         2
+         193         1
+         192         1
+         191         3
+         190         2
+         189         1
+         188         2
+         187         2
+         186         1
+         185         4
+         184         3
+         183         3
+         182         3
+         181         2
+         180         1
+         179         4
+         178         1
+         177         4
+         175         1
+         174         1
+         173         2
+         172         1
+         171         3
+         170         2
+         169         3
+         167         2
+         165         2
+         164         1
+         163         4
+         162         1
+         161         1
+         160         2
+         159         1
+         158         3
+         157         1
+         156         6
+         155         3
+         154         2
+         153         1
+         152         3
+         151         2
+         150         4''',
+    '''BPP      2'
+          47
+        1000
+         200         2
+         199         4
+         198         1
+         197         1
+         196         2
+         195         2
+         194         2
+         193         1
+         191         2
+         190         1
+         189         2
+         188         1
+         187         2
+         186         1
+         185         2
+         184         5
+         183         1
+         182         1
+         181         3
+         180         2
+         179         2
+         178         1
+         176         1
+         175         2
+         174         5
+         173         1
+         172         3
+         171         1
+         170         4
+         169         2
+         168         1
+         167         5
+         165         2
+         164         2
+         163         3
+         162         2
+         160         2
+         159         2
+         158         2
+         157         4
+         156         3
+         155         2
+         154         1
+         153         3
+         152         2
+         151         2
+         150         2''',
+    '''BPP      3'
+          44
+        1000
+         200         1
+         199         2
+         197         2
+         196         2
+         193         3
+         192         2
+         191         2
+         190         2
+         189         3
+         188         1
+         187         1
+         185         3
+         183         2
+         182         1
+         181         3
+         180         3
+         179         3
+         178         1
+         177         5
+         176         2
+         175         5
+         174         4
+         173         1
+         171         3
+         170         1
+         169         2
+         168         5
+         167         1
+         166         4
+         165         2
+         163         1
+         162         2
+         161         2
+         160         3
+         159         2
+         158         2
+         157         1
+         156         3
+         155         3
+         154         1
+         153         2
+         152         3
+         151         2
+         150         1''',
+    '''BPP      4'
+          42
+        1000
+         200         3
+         199         5
+         198         4
+         197         1
+         195         1
+         193         4
+         192         1
+         188         1
+         187         1
+         186         3
+         185         3
+         184         2
+         183         2
+         182         1
+         181         1
+         180         3
+         179         2
+         178         6
+         177         2
+         176         4
+         175         1
+         173         4
+         172         4
+         170         1
+         169         3
+         168         4
+         167         1
+         165         3
+         164         1
+         163         2
+         162         4
+         161         1
+         160         3
+         159         3
+         158         1
+         157         3
+         155         2
+         154         3
+         153         1
+         152         3
+         151         1
+         150         1''',
+    '''BPP      5'
+          44
+        1000
+         200         5
+         199         2
+         198         2
+         197         2
+         196         1
+         195         3
+         194         2
+         193         2
+         192         4
+         191         2
+         190         4
+         188         3
+         187         2
+         186         2
+         185         1
+         184         1
+         183         1
+         182         1
+         181         3
+         180         1
+         178         3
+         177         2
+         176         2
+         174         1
+         173         1
+         172         1
+         171         3
+         168         2
+         167         1
+         165         1
+         164         1
+         163         1
+         162         3
+         161         3
+         160         3
+         159         2
+         158         3
+         157         3
+         156         2
+         155         5
+         154         3
+         153         3
+         151         5
+         150         2'''
+]
 
-# generates a random string
-def create_string(length):
-    return ''.join(str(random.randint(0, 1)) for _ in range(length))
+def parse_instance(instance):
+    lines = instance.split('\n')
+    capacity = int(lines[2])
+    items = []
+    for line in lines[3:]:
+        if line.strip():
+            weight, value = map(int, line.split())
+            items.append((weight, value))
+    return capacity, items
 
+def create_individual(capacity, items):
+    bins = [[]]
+    for weight, count in items:
+        for _ in range(count):
+            placed = False
+            for bin in bins:
+                if sum(bin) + weight <= capacity:
+                    bin.append(weight)
+                    placed = True
+                    break
+            if not placed:
+                bins.append([weight])
+    return bins
 
-# calculates the deceptive fitness of a string
-def calculate_fitness(string):
-    num_ones = string.count('1')
-    if num_ones == 0:
-        return 2 * len(string)
-    else:
-        return num_ones
-
-
-# performs one point crossover
-def one_point_crossover(p1, p2):
-    crossover_point = random.randint(1, len(p1) - 1)
-    c1 = p1[:crossover_point] + p2[crossover_point:]
-    c2 = p2[:crossover_point] + p1[crossover_point:]
-    return c1, c2
-
-
-def standard_mutation(string, rate_mutation):
-    string_post_mutation = ''
-    for char in string:
-        if random.random() < rate_mutation:
-            string_post_mutation += '0' if char == '1' else '1'
-        else:
-            string_post_mutation += char
-    return string_post_mutation
-
-
-def selection(population, rate_mutation):
-    next_generation = []
-    total_fitness = 0
-
-    # calculate the fitness of the population
-    for ind in population:
-        total_fitness += calculate_fitness(ind)
-
-    average_fitness = total_fitness / len(population)
-
-    # perform one-point crossover
-    for _ in range(len(population) // 2):
-        parents = []
-        weights = []
-
-        # get the weights
-        for ind in population:
-            weights.append(calculate_fitness(ind))
-
-        # select the parents
-        for _ in range(2):
-            selected_parent = random.choices(population, weights=weights)[0]
-            parents.append(selected_parent)
-        parent1, parent2 = parents
-
-        child1, child2 = one_point_crossover(parent1, parent2)
-        child1 = standard_mutation(child1, rate_mutation)
-        child2 = standard_mutation(child2, rate_mutation)
-        next_generation.extend([child1, child2])
-
-    return next_generation, average_fitness
-
-
-def genetic_algorithm(str_len, population_size, num_generations, rate_mutation):
-    population = []
-    average_fitnesses = []
-
-    # generate the initial population
-    for _ in range(population_size):
-        population.append(create_string(str_len))
-
-    # evolve the population
-    for generation in range(num_generations):
-        population, average_fitness = selection(population, rate_mutation)
-        average_fitnesses.append(average_fitness)
-
-    return average_fitnesses
-
-
-ind_len = 30
-num_gens = 100
-pop_size = 100
-rate_mut = 0.01
-
-avg_fitnesses = genetic_algorithm(ind_len, pop_size, num_gens, rate_mut)
-
-# plot the average fitness over each generation
-plt.plot(range(num_gens), avg_fitnesses)
-
-plt.xlabel('no. of generations')
-plt.ylabel('fitness')
-plt.title('avg fitness')
-
-plt.show()
+for i in instances:
+    cap, inst = parse_instance(i)
+    bins = create_individual(cap, inst)
+    print(bins)
