@@ -253,7 +253,7 @@ def parse_instance(instance):
             items.append((weight, value))
     return capacity, items
 
-def create_individual(capacity, items):
+def create_bin(capacity, items):
     bins = [[]]
     for weight, count in items:
         for _ in range(count):
@@ -269,5 +269,5 @@ def create_individual(capacity, items):
 
 for i in instances:
     cap, inst = parse_instance(i)
-    bins = create_individual(cap, inst)
+    bins = create_bin(cap, inst)
     print(bins)
